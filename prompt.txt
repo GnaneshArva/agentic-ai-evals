@@ -1,0 +1,787 @@
+
+
+Application Name
+
+agentic-ai-evals
+
+
+---
+
+Objective
+
+Build an Enterprise-grade Agentic AI Evaluation Platform named agentic-ai-evals using Python 3.12+.
+
+The purpose of this project is to evaluate the quality, correctness, reliability, safety, performance, and cost of Agentic AI applications.
+
+The initial implementation should evaluate the Travel Planner Agent, but the architecture must remain completely domain-agnostic so that additional agents can be evaluated without architectural changes.
+
+The platform must support:
+
+Agent Evaluation
+
+Tool Evaluation
+
+Retrieval (RAG) Evaluation
+
+Guardrail Evaluation
+
+Planning Evaluation
+
+Structured Output Evaluation
+
+Performance Evaluation
+
+Cost Evaluation
+
+
+This project must follow enterprise software engineering principles rather than being a demo.
+
+
+---
+
+Technology Stack
+
+Use exactly:
+
+Python 3.12+
+
+Pydantic v2
+
+asyncio
+
+pandas
+
+openpyxl
+
+httpx
+
+uv package manager
+
+
+Do NOT include:
+
+Docker
+
+Kubernetes
+
+Cloud deployment
+
+Authentication
+
+CI/CD
+
+Monitoring
+
+Databases
+
+
+Persist evaluation artifacts as JSON and Excel files.
+
+
+---
+
+Architecture Principles
+
+Implement using:
+
+Clean Architecture
+
+SOLID Principles
+
+Strategy Pattern
+
+Factory Pattern
+
+Dependency Injection
+
+Chain of Responsibility (optional for evaluation pipeline)
+
+Configuration-driven execution
+
+
+
+---
+
+Overall Architecture
+
+Evaluation Dataset
+        │
+        ▼
+Evaluation Runner
+        │
+        ▼
+Travel Planner Agent
+        │
+        ▼
+Evaluation Pipeline
+        │
+ ┌──────┼─────────────┐
+ ▼      ▼             ▼
+Metrics Evaluators   Report Generator
+        │
+        ▼
+Evaluation Results
+
+The Travel Planner Agent should be treated as an external system under test.
+
+
+---
+
+Project Structure
+
+agentic-ai-evals/
+
+│
+├── app/
+│
+│   ├── config/
+│   │
+│   ├── dto/
+│   │
+│   ├── datasets/
+│   │
+│   ├── evaluators/
+│   │      ├── response/
+│   │      ├── retrieval/
+│   │      ├── tools/
+│   │      ├── planning/
+│   │      ├── guardrails/
+│   │      ├── performance/
+│   │      ├── cost/
+│   │      └── structured_output/
+│   │
+│   ├── interfaces/
+│   │
+│   ├── factories/
+│   │
+│   ├── pipeline/
+│   │
+│   ├── reports/
+│   │
+│   ├── runners/
+│   │
+│   ├── services/
+│   │
+│   ├── utils/
+│   │
+│   └── main.py
+│
+├── evaluation-results/
+│
+├── datasets/
+│
+├── README.md
+│
+├── pyproject.toml
+│
+└── .env.example
+
+
+---
+
+Evaluation Flow
+
+Load Dataset
+
+↓
+
+Execute Agent
+
+↓
+
+Collect Outputs
+
+↓
+
+Run Evaluators
+
+↓
+
+Aggregate Scores
+
+↓
+
+Generate Report
+
+↓
+
+Export JSON
+
+↓
+
+Export Excel
+
+Each stage must be independently replaceable.
+
+
+---
+
+Evaluation Runner
+
+Create:
+
+EvaluationRunner
+
+Responsibilities:
+
+Load evaluation datasets
+
+Execute test cases
+
+Invoke Travel Planner Agent
+
+Capture outputs
+
+Invoke Evaluation Pipeline
+
+Generate final report
+
+
+Runner should not contain evaluation logic.
+
+
+---
+
+Evaluation Pipeline
+
+Create:
+
+EvaluationPipeline
+
+Pipeline:
+
+Agent Response
+
+↓
+
+Response Evaluation
+
+↓
+
+Tool Evaluation
+
+↓
+
+Retrieval Evaluation
+
+↓
+
+Planning Evaluation
+
+↓
+
+Guardrail Evaluation
+
+↓
+
+Performance Evaluation
+
+↓
+
+Cost Evaluation
+
+↓
+
+Structured Output Evaluation
+
+↓
+
+Aggregate Score
+
+Each evaluator executes independently.
+
+
+---
+
+Common Evaluator Interface
+
+Every evaluator must implement:
+
+class Evaluator(ABC):
+
+    async def evaluate(
+        self,
+        context: EvaluationContext
+    ) -> EvaluationResult:
+        ...
+
+No evaluator should know about another evaluator.
+
+
+---
+
+Response Evaluator
+
+Implement:
+
+ResponseEvaluator
+
+Evaluate:
+
+Correctness
+
+Completeness
+
+Relevance
+
+Clarity
+
+
+Return score between:
+
+0–100
+
+
+---
+
+Tool Evaluator
+
+Implement:
+
+ToolEvaluator
+
+Evaluate:
+
+Correct tool selected
+
+Tool execution success
+
+Tool parameters
+
+Number of tool calls
+
+Missing tool calls
+
+Unnecessary tool calls
+
+
+
+---
+
+Retrieval Evaluator
+
+Implement:
+
+RetrievalEvaluator
+
+Evaluate:
+
+Context relevance
+
+Retrieved documents
+
+Citation accuracy
+
+Top-K correctness
+
+Grounding quality
+
+
+
+---
+
+Planning Evaluator
+
+Implement:
+
+PlanningEvaluator
+
+Evaluate:
+
+Step ordering
+
+Missing steps
+
+Extra steps
+
+Workflow correctness
+
+
+Example:
+
+Search Flights
+
+↓
+
+Search Hotels
+
+↓
+
+Generate Itinerary
+
+
+---
+
+Guardrail Evaluator
+
+Implement:
+
+GuardrailEvaluator
+
+Evaluate:
+
+Prompt injection blocked
+
+Jailbreak blocked
+
+PII masked
+
+Harmful output blocked
+
+
+
+---
+
+Structured Output Evaluator
+
+Implement:
+
+StructuredOutputEvaluator
+
+Validate:
+
+JSON schema
+
+Pydantic DTO
+
+Required fields
+
+Enum values
+
+Missing properties
+
+
+
+---
+
+Performance Evaluator
+
+Implement:
+
+PerformanceEvaluator
+
+Measure:
+
+Total latency
+
+Tool latency
+
+Retrieval latency
+
+LLM latency
+
+
+
+---
+
+Cost Evaluator
+
+Implement:
+
+CostEvaluator
+
+Measure:
+
+Input tokens
+
+Output tokens
+
+Embedding tokens
+
+Total cost
+
+Average cost
+
+
+Do not connect to paid APIs.
+
+Mock token usage where required.
+
+
+---
+
+Score Aggregation
+
+Create:
+
+EvaluationScoreAggregator
+
+Aggregate:
+
+Individual scores
+
+Weighted score
+
+Overall score
+
+
+Configurable weights.
+
+Example:
+
+Response .............30%
+
+Tools................20%
+
+Retrieval............15%
+
+Planning.............10%
+
+Guardrails...........10%
+
+Performance..........5%
+
+Cost.................5%
+
+Structured Output....5%
+
+Weights should be configurable.
+
+
+---
+
+Dataset Support
+
+Support datasets in JSON.
+
+Example:
+
+{
+  "id": "travel-001",
+  "user_prompt": "Plan a five day trip to Japan.",
+  "expected_tools": [
+    "search_flights",
+    "search_hotels"
+  ],
+  "expected_keywords": [
+    "Tokyo",
+    "Kyoto"
+  ]
+}
+
+Dataset loading must be extensible.
+
+
+---
+
+Reports
+
+Generate:
+
+JSON Report
+
+Include:
+
+Scores
+
+Metrics
+
+Violations
+
+Failures
+
+
+
+---
+
+Excel Report
+
+Generate:
+
+Summary sheet
+
+Individual test cases
+
+Metric scores
+
+Overall scores
+
+
+Use openpyxl.
+
+
+---
+
+DTOs
+
+Create Pydantic DTOs.
+
+Examples:
+
+EvaluationContext
+
+EvaluationResult
+
+MetricScore
+
+EvaluationReport
+
+ToolEvaluationResult
+
+RetrievalEvaluationResult
+
+PerformanceMetrics
+
+GuardrailMetrics
+
+Never use dictionaries.
+
+
+---
+
+Configuration
+
+Support:
+
+ENABLE_RESPONSE_EVALUATION
+
+ENABLE_TOOL_EVALUATION
+
+ENABLE_RETRIEVAL_EVALUATION
+
+ENABLE_PLANNING_EVALUATION
+
+ENABLE_GUARDRAIL_EVALUATION
+
+ENABLE_PERFORMANCE_EVALUATION
+
+ENABLE_COST_EVALUATION
+
+ENABLE_STRUCTURED_OUTPUT_EVALUATION
+
+Each evaluator should be independently enabled or disabled.
+
+
+---
+
+Factory Pattern
+
+Create:
+
+EvaluatorFactory
+
+Instantiate evaluators from configuration.
+
+
+---
+
+Dependency Injection
+
+Inject:
+
+Dataset loader
+
+Evaluation pipeline
+
+Evaluators
+
+Report generator
+
+
+Avoid constructing implementations inside services.
+
+
+---
+
+Extensibility
+
+Adding a new evaluator should require only:
+
+1. Implement the Evaluator interface.
+
+
+2. Register it with the factory.
+
+
+3. Enable it in configuration.
+
+
+
+No existing evaluator should need modification.
+
+
+---
+
+Deliverables
+
+Generate a complete runnable project.
+
+The application should run using:
+
+uv sync
+
+uv run python app/main.py
+
+The platform should execute evaluation datasets against the Travel Planner Agent, collect outputs, evaluate them across multiple dimensions, aggregate weighted scores, and generate JSON and Excel reports.
+
+
+---
+
+Documentation
+
+Generate a comprehensive README explaining:
+
+Project overview
+
+Enterprise Evaluation Architecture
+
+Clean Architecture
+
+Evaluation Pipeline
+
+Strategy Pattern
+
+Factory Pattern
+
+Dependency Injection
+
+Folder structure
+
+Dataset format
+
+Response Evaluation
+
+Tool Evaluation
+
+Retrieval Evaluation
+
+Planning Evaluation
+
+Guardrail Evaluation
+
+Performance Evaluation
+
+Cost Evaluation
+
+Structured Output Evaluation
+
+Score aggregation
+
+Report generation
+
+Configuration
+
+Adding a new evaluator
+
+Example evaluation workflow
+
+Example evaluation reports
+
+
+
+---
+
+Learning Goals
+
+By completing this project, the implementation should demonstrate:
+
+How enterprise organizations build a centralized AI evaluation platform rather than embedding evaluation logic into agents.
+
+A modular evaluation pipeline where each quality dimension is independently pluggable.
+
+Extensible evaluator design using Strategy, Factory, and Dependency Injection patterns.
+
+Dataset-driven regression testing for Agentic AI applications.
+
+Comprehensive scoring and reporting that can be integrated into future CI/CD pipelines or release gates.
+
