@@ -10,6 +10,7 @@ from app.factories.evaluator_factory import EvaluatorFactory
 from app.pipeline.evaluation_pipeline import EvaluationPipeline
 from app.datasets.loader import JSONDatasetLoader
 from app.services.travel_planner_agent import TravelPlannerAgent
+from app.services.http_agent_client import HttpAgentClient
 from app.reports.composite_reporter import CompositeReportGenerator
 from app.runners.evaluation_runner import EvaluationRunner
 from app.utils.logger import get_logger
@@ -23,7 +24,14 @@ async def main():
 
     # 1. Dependency Injection Setup
     dataset_loader = JSONDatasetLoader()
-    agent_under_test = TravelPlannerAgent()
+
+    # Select agent: simulated (default) or http (real agent service)
+    if settings.AGENT_MODE == "http":
+        logger.info(f"Using HTTP agent client → {settings.AGENT_BASE_URL}")
+        agent_under_test = HttpAgentClient(base_url=settings.AGENT_BASE_URL)
+    else:
+        logger.info("Using simulated agent (default mode)")
+        agent_under_test = TravelPlannerAgent()
 
     evaluator_factory = EvaluatorFactory(settings)
     evaluators = evaluator_factory.create_evaluators()

@@ -17,4 +17,8 @@ class Settings(BaseSettings):
     DATASET_PATH: str = Field(default="datasets/travel_planner_eval_dataset.json")
     LOG_LEVEL: str = Field(default="INFO")
 
+    # Agent connection mode: "simulated" (default) or "http" (calls real agent)
+    AGENT_MODE: str = Field(default="simulated", description="simulated or http")
+    AGENT_BASE_URL: str = Field(default="http://localhost:8000", description="Base URL of travel-agent-service")
+
 settings = Settings()
