@@ -8,6 +8,7 @@ from app.evaluators.guardrails.guardrail_evaluator import GuardrailEvaluator
 from app.evaluators.performance.performance_evaluator import PerformanceEvaluator
 from app.evaluators.cost.cost_evaluator import CostEvaluator
 from app.evaluators.structured_output.structured_output_evaluator import StructuredOutputEvaluator
+from app.evaluators.response.coherence_evaluator import CoherenceEvaluator
 from app.utils.logger import get_logger
 
 logger = get_logger("evaluator_factory")
@@ -40,6 +41,8 @@ class EvaluatorFactory:
             evaluators.append(CostEvaluator())
         if self.settings.ENABLE_STRUCTURED_OUTPUT_EVALUATION:
             evaluators.append(StructuredOutputEvaluator())
+        if getattr(self.settings, "ENABLE_COHERENCE_EVALUATION", True):
+            evaluators.append(CoherenceEvaluator())
 
         logger.info(f"EvaluatorFactory initialized {len(evaluators)} active evaluators: {[e.name for e in evaluators]}")
         return evaluators

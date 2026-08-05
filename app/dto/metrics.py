@@ -52,3 +52,10 @@ class StructuredOutputMetrics(BaseModel):
     required_fields_present: bool = Field(default=True)
     enum_values_valid: bool = Field(default=True)
     missing_properties: list[str] = Field(default_factory=list)
+
+class CoherenceMetrics(BaseModel):
+    sequential_continuity_score: float = Field(default=0.0)
+    structural_flow_score: float = Field(default=0.0)
+    non_contradiction_score: float = Field(default=0.0)
+    coherence_score: float = Field(default=0.0)
+    issues_detected: list[str] = Field(default_factory=list)

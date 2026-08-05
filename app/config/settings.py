@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     ENABLE_PERFORMANCE_EVALUATION: bool = Field(default=True)
     ENABLE_COST_EVALUATION: bool = Field(default=True)
     ENABLE_STRUCTURED_OUTPUT_EVALUATION: bool = Field(default=True)
+    ENABLE_COHERENCE_EVALUATION: bool = Field(default=True)
 
     RESULTS_DIR: str = Field(default="evaluation-results")
     DATASET_PATH: str = Field(default="datasets/travel_planner_eval_dataset.json")
